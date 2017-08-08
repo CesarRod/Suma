@@ -6,8 +6,12 @@ import {
   Text,
   TextInput,
   View,
-  Alert
+  Alert,
+  Keyboard,
+  TouchableWithoutFeedback,
+  Dimensions
 } from 'react-native';
+import Resultado from './resultado';
 
 export default class suma extends Component{
   constructor(){
@@ -28,46 +32,45 @@ export default class suma extends Component{
   cambioNumero2(n2){
     this.setState({n2})
   }
-  //Funcion que realiza la suma entre los dos numeros
-  suma(){
 
-      let a=parseFloat(this.state.n1)//declaracion de variable a que contiene el valor floatante de n1
-      let b=parseFloat(this.state.n2)//declaracion de variable a que contiene el valor floatante de n1
-      let c=a+b
-      if(!isNaN(c)){ //si lo que estuvo en el TextBox no fue un NaN (Not a Number)
-        Alert.alert(c.toString())
-      }else{Alert.alert("Error") }
-  }
+
   //Funcion que cambia el foco de TextBox1 a TextBox2
   cambioFoco(){
     this.refs.num2.focus()
   }
+
   render(){
     return(
-      <View style={styles.container}>
-        <TextInput
-          style={styles.box}//Estilo
-          keyboardType='numeric'//Tipo de teclado
-          returnKeyType={'next'}//Tipo de tecla return
-          onSubmitEditing={(event)=> this.cambioFoco()}//Cuando presione return cambia el foco
-          placeholder="Numero 1"
-          value={this.state.n1}// El valor sera el del state n1
-          onChangeText={(numero1)=> this.cambioNumero1(numero1)}// Esto es para "setear" el valor a n1
-        />
-        <Text style={styles.mas}> + </Text>
-        <TextInput
-          style={styles.box}
-          ref='num2'//referencia
-          keyboardType='numeric'
-          returnKeyType={'done'}
-          placeholder="Numero 2"
-          value={this.state.n2}
-          onChangeText={(numero2)=> this.cambioNumero2(numero2)}
-        />
+      <TouchableWithoutFeedback
+        onPress={Keyboard.dismiss}
+        style={styles.touch} >
 
-        <Button onPress={()=>this.suma()} title='Resultado' />
-        {/*Cuando se presione el boton llama a la funcion suma*/}
-      </View>
+          <View style={styles.container} >
+            <TextInput
+              style={styles.box}//Estilo
+              keyboardType='numeric'//Tipo de teclado
+              returnKeyType={'next'}//Tipo de tecla return
+              onSubmitEditing={(event)=> this.cambioFoco()}//Cuando presione return cambia el foco
+              placeholder="Numero 1"
+              value={this.state.n1}// El valor sera el del state n1
+              onChangeText={(numero1)=> this.cambioNumero1(numero1)}// Esto es para "setear" el valor a n1
+
+            />
+            <Text style={styles.mas}> + </Text>
+            <TextInput
+              style={styles.box}
+              ref='num2'//referencia
+              keyboardType='numeric'
+              returnKeyType={'done'}
+              placeholder="Numero 2"
+              value={this.state.n2}
+              onChangeText={(numero2)=> this.cambioNumero2(numero2)}
+
+            />
+            <Resultado n1={this.state.n1} n2={this.state.n2}/>
+            {/*Le manda los numeros por "parametro" props*/}
+          </View>
+      </TouchableWithoutFeedback>
     );
   }
 }
@@ -77,7 +80,8 @@ const styles = StyleSheet.create({
     marginTop:10,
     paddingLeft:20,
     paddingRight:20,
-
+    width:Dimensions.get('window').width,//Obtiene las Dimensiones de la pantalla
+    height:Dimensions.get('window').height
   },
   box:{
     height:40,
@@ -91,6 +95,11 @@ const styles = StyleSheet.create({
     fontSize:25,
     alignSelf: 'center',
     marginBottom:20
+  },
+  touch:{
+
+    width:Dimensions.get('window').width,
+    height:Dimensions.get('window').height
   }
 });
 
